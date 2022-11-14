@@ -43,15 +43,6 @@ class Application(tornado.web.Application):
         )
         super().__init__(handlers, **settings)
 
-async def main():
-    tornado.options.parse_command_line()
-    app = Application()
-    app.listen(options.port)
-    await asyncio.Event().wait()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -77,7 +68,7 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler):
     def update_cache(cls, chat):
         cls.cache.append(chat)
         if len(cls.cache) > cls.cache_size:
-            cls.cache = cls.cache[-cls.cache_size:]
+            cls.cache = cls.cache[-cls.cache_size :]
 
     @classmethod
     def send_updates(cls, chat):
@@ -98,3 +89,14 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler):
 
         ChatSocketHandler.update_cache(chat)
         ChatSocketHandler.send_updates(chat)
+
+
+async def main():
+    tornado.options.parse_command_line()
+    app = Application()
+    app.listen(options.port)
+    await asyncio.Event().wait()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
